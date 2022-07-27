@@ -1,0 +1,36 @@
+<!--この内容がbase.htmlの特定部分にぶち込まれる-->
+{% extends "base.html" %}
+{% block content %}
+    <h1>ツイート保管庫</h1>
+    {% for post in posts %}
+    <article>
+    <p id="tw">{{post.tw}}</p>
+        <form action="/{{post.id}}" method="POST" enctype="multipart/form-data">
+            <h4>
+                <input type="radio" name="timesel" value="0" id="00">
+                <label for="00" class="bu1">00~</label>
+                <input type="radio" name="timesel" value="1" id="03">
+                <label for="03" class="bu1">03~</label>
+                <input type="radio" name="timesel" value="2" id="06">
+                <label for="06" class="bu1">06~</label>
+                <input type="radio" name="timesel" value="3" id="09">
+                <label for="09" class="bu1 clear_bu">09~</label>
+                <input type="radio" name="timesel" value="4" id="12">
+                <label for="12" class="bu1">12~</label>
+                <input type="radio" name="timesel" value="5" id="15">
+                <label for="15" class="bu1">15~</label>
+                <input type="radio" name="timesel" value="6" id="18">
+                <label for="18" class="bu1 clear_bu">18~</label>
+                <input type="radio" name="timesel" value="7" id="21">
+                <label for="21" class="bu1">21~</label>
+                <input type="radio" name="timesel" value="8" id="Now" checked>
+                <label for="Now" class="bu1">Now</label>
+                <p>
+                    <input href="/{{post.id}}" type="submit" name="dotweet" id="dotweet" value="ツイートする">
+                    <input href="/{{post.id}}" type="submit" name="dodelete" id="dodelete" value="削除">
+                </p>
+            </h4>
+        </form>
+    </article>
+    {% endfor %}
+{% endblock %}

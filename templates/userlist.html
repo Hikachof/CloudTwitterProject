@@ -1,0 +1,50 @@
+<!--この内容がbase.htmlの特定部分にぶち込まれる-->
+{% extends "base.html" %}
+{% block content %}
+    <h1>ユーザーリスト</h1>
+    {% for d in alldatas %}
+    <article>
+        <div class="back">
+        <div class="basic" style="--c: #741919;">{{d.name}}</div>
+        <div class="basic" style="--c: #a71616;">{{d.id}}</div>
+        <br>
+        {% for dd in d.links %}
+        <div class="basic" style="--c: #3918b9;"><a>{{dd}}</a></div>
+        {% endfor %}
+        <br>
+        <div class="basic" style="--c: #3918b9;">
+        よく呟くワードトップ２０
+        <br>
+        {% for dd in d.wordstop20 %}
+        {{dd.0}} : {{dd.1}}
+        <br>
+        {% endfor %}
+        </div>
+        <div class="basic" style="--c: #3918b9;">
+        好きなワードトップ２０
+        <br>
+        {% for dd in d.wordsliketop20 %}
+        {{dd.0}} : {{dd.1}}
+        <br>
+        {% endfor %}
+        </div>
+        <div class="basic" style="--c: #3918b9;">
+        つぶやきからの各スコア
+        <br>
+        HOBBY : {{d.score.hobby}}
+        <br>
+        SEX : {{d.score.sex}}
+        <br>
+        JOB : {{d.score.job}}
+        <br>
+        LONELI : {{d.score.loneli}}
+        <br>
+        HOME : {{d.score.home}}
+        <br>
+        MENTAL : {{d.score.mental}}
+        <br>
+        </div>
+        </div>
+    </article>
+    {% endfor %}
+{% endblock %}

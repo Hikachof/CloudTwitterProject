@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        input[type="radio"]{
+            display: none; /* ラジオボタンを非表示にする */
+        }
+        input:checked + label {
+            background: #31A9EE;/* マウス選択時の背景色を指定する */
+            color: #ffffff; /* マウス選択時のフォント色を指定する */
+        }
+        .bu1:hover {
+            background-color: #E2EDF9; /* マウスオーバー時の背景色を指定する */
+        }
+
+        p {
+            float:none;
+            position:static;
+            clear: both;
+        }
+
+        .bu1 {
+            display: block; /* ブロックレベル要素化する */
+            float: left; /* 要素の左寄せ・回り込を指定する */
+            margin: 5px; /* ボックス外側の余白を指定する */
+            width: 50px; /* ボックスの横幅を指定する */
+            height: 20px; /* ボックスの高さを指定する */
+            padding-left: 5px; /* ボックス内左側の余白を指定する */
+            padding-right: 5px; /* ボックス内御右側の余白を指定する */
+            color: #b20000; /* フォントの色を指定 */
+            text-align: center; /* テキストのセンタリングを指定する */
+            line-height: 20px; /* 行の高さを指定する */
+            cursor: pointer; /* マウスカーソルの形（リンクカーソル）を指定する */
+            border: 2px solid #006DD9;/* ボックスの境界線を実線で指定する */
+            border-radius: 5px; /* 角丸を指定する */
+        }
+
+        .clear_bu {
+            clear: both;
+        }
+
+        .clear_all {
+            float:none;
+            position:static;
+            clear: both;
+        }
+
+        .perfect-circle {
+            width: var(--r, 150px);
+            height: var(--h, 150px);
+            border-radius: 50%;
+            background: #0091EA;
+        }
+
+        .hexagon-1 {
+            position: relative;
+            width: 150px;
+            height: 130px;
+        }
+
+        .hexagon-1::before {
+            content: "";
+            width: 150px;
+            position: absolute;
+            border-bottom: 64.95px solid #3cb371;
+            border-left: 37.5px solid transparent;
+            border-right: 37.5px solid transparent;
+            box-sizing: border-box;
+        }
+
+        .hexagon-1::after {
+            content: "";
+            width: 150px;
+            position: absolute;
+            top: 64.95px;
+            border-top: 64.95px solid #3cb371;
+            border-left: 37.5px solid transparent;
+            border-right: 37.5px solid transparent;
+            box-sizing: border-box;
+        }
+
+        /* グローバル変数の定義 */
+        :root {
+            --font-color:#d0c4dd;
+        }
+        .back {
+            background-color: #3b3b3b;
+            padding: 10px;
+        }
+        .basic{
+            display: inline-block;
+
+            font-size: 15px;
+            font-weight: bold;
+            /*font-family: MS PGothic;*/
+            color: var(--font-color);
+            text-align: center;
+            text-decoration: none;
+            line-height: 20px;
+            background-color: var(--c, #000000);
+            /*枠の余白などの指定*/
+            box-sizing: content-box;
+            width: auto;
+            padding: 5px;
+            border:1px soilid #c72a2a;
+            margin: 1px;
+        }
+        /* マウスオーバーしたときに実行される */
+        .basic:hover {
+            color: #ff0000
+        }
+        .basic a {
+            text-decoration:underline;
+        }
+        .basic.rank {
+            text-align:left;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="header">
+        <h3>
+            <a href="/" role="button">ホーム</a>
+            <a href="/tweetlist" role="button">ツイート保留所</a>
+            <a href="/alltweet" role="button">ツイート待機場</a>
+            <a href="/userlist" role="button">ユーザーリスト</a>
+        </h3>
+    </div>
+    <div class="main">
+        {% block content %}
+        {% endblock content %}
+    </div>
+</body>
+</html>
