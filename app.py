@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 #from crypt import methods
 from email.quoprimime import body_check
-from flask import Flask
+from socket import IP_DROP_MEMBERSHIP
+from flask import Flask, jsonify, make_response
 from flask import render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
+
 from datetime import datetime
 
 import subprocess
@@ -14,6 +16,7 @@ import json
 import sys
 import os
 import urllib.parse
+import glob
 
 folder_path = "/home/hikachof/ドキュメント/VSCode/Pythons/TwitterProject/Source/"
 sys.path.insert(0, folder_path)
@@ -23,6 +26,8 @@ import General as g
 debug = False
 
 app = Flask(__name__)
+# 文字化け禁止
+app.config['JSON_AS_ASCII'] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///Twitter.db"
 # よくわからん警告文の解除
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -136,10 +141,42 @@ def addtweet():
 @app.route("/userlist", methods=['GET'])
 def userlist():
     if request.method == 'GET':
-        id = "@enako_cos"
-        alldata = g.LoadData(f"damp/{id}", f"AllData_{id}")
+        return render_template("userlist.html")
 
-        return render_template("userlist.html", alldatas=[alldata])
+#===================================================================================================================
+#== AjaxによるJSからの呼び出し関数（というかAPIというべきか）
+#===================================================================================================================
+# 初めから３０ずつ取れるし、指定した場所から開始することもできる
+# endnumによって前回の終了地点を得ることによってそこからの続きを得ることができる
+@app.route("/increment", methods=["POST"])
+def GetAllData():
+    # JSからの変数を取得している
+    req = request.form
+    startnum = int(req["startnum"])
+    # 
+    alldatas = []
+    files = glob.glob("/home/hikachof/デスクトップ/datas/Users/@*")
+    count = 0
+    endnum = 0
+    #for i,fi in enumerate(files):
+    maxnum = len(files)
+    for i in range(startnum, maxnum):
+        fi = files[i]
+        endnum = i
+        id = fi.split("/")[-1]
+        alldata = g.GetAllUserData(id)
+        if alldata and alldata != "empty":
+            alldatas.append(alldata)
+            count += 1;
+            if count > 30:
+                break;
+
+    res = {"alldatas": alldatas, "endnum": endnum+1}
+    return jsonify(res)
+
+#===================================================================================================================
+#== 使いやすい関数
+#===================================================================================================================
 
 # DB内のツイート予定のデータから現在ツイートすべきツイートを取得する
 # 取得されたツイートはDB内から削除される
@@ -164,6 +201,8 @@ def GetDBTweets(maxgetnum):
                 break
     db.session.commit()
     return tws
+
+
 
 if __name__ == '__main__':
     if not debug:
