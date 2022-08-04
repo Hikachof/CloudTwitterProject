@@ -141,7 +141,18 @@ def addtweet():
 @app.route("/userlist", methods=['GET'])
 def userlist():
     if request.method == 'GET':
-        return render_template("userlist.html")
+        count = 0
+        alldatas = []
+        files = glob.glob("static/datas/Users/@*")
+        for fi in files:
+            id = fi.split("/")[-1]
+            alldata = g.GetAllUserData(id)
+            if alldata and alldata != "empty":
+                alldatas.append(alldata)
+                count += 1;
+                if count > 29:
+                    break;
+        return render_template("userlist.html", alldatas=alldatas)
 
 #===================================================================================================================
 #== AjaxによるJSからの呼び出し関数（というかAPIというべきか）
@@ -155,7 +166,7 @@ def GetAllData():
     startnum = int(req["startnum"])
     # 
     alldatas = []
-    files = glob.glob("/home/hikachof/デスクトップ/datas/Users/@*")
+    files = glob.glob("static/datas/Users/@*")
     count = 0
     endnum = 0
     #for i,fi in enumerate(files):

@@ -11,12 +11,17 @@
 </head>
 <body>
     <div class="header">
-        <h3>
-            <a href="/" role="button">ホーム</a>
-            <a href="/tweetlist" role="button">ツイート保留所</a>
-            <a href="/alltweet" role="button">ツイート待機場</a>
-            <a href="/userlist" role="button">ユーザーリスト</a>
-        </h3>
+        <div class="logo">
+            <img src="static/datas/page_icon.png" alt="">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/" role="button">ホーム</a></li>
+                <li><a href="/tweetlist" role="button">ツイート保留所</a></li>
+                <li><a href="/alltweet" role="button">ツイート待機場</a></li>
+                <li><a href="/userlist" role="button">ユーザーリスト</a></li>
+            </ul>
+        </nav>
     </div>
     <div class="main">
         {% block content %}
