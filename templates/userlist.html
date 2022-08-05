@@ -3,33 +3,42 @@
 {% block content %}
     <link rel="stylesheet" href="static/css/userlist.css">
     <h1 class="title">ユーザーリスト</h1>
-    <br>
-    <a id="userlist"></a>
-    <div class="datas">
     {% for ad in alldatas %}
-    <article class="databox">
-        <div class="imgbox">
-            <img src="static/datas/Users/{{ad.id}}/{{ad.icon_path}}"  alt="">
-        </div>
-        <div class="basic name_id">
-            {{ad.name}}
+    <div class="minidatas">
+        <div class="data icon"><img src="static/datas/Users/{{ad.id}}/{{ad.icon_path}}"  alt=""></div>
+        <div class="data name">{{ad.name}}</div>
+        <div class="data id">{{ad.id}}</div>
+        <div class="data sep"></div>
+        <div class="data words normal">
+            よく呟くワード6
             <br>
-            {{ad.id}}
+            {{ad.wordstop20[0].0}} : {{ad.wordstop20[0].1}}<br>
+            {{ad.wordstop20[0].0}} : {{ad.wordstop20[0].1}}<br>
+            {{ad.wordstop20[0].0}} : {{ad.wordstop20[0].1}}<br>
+            {{ad.wordstop20[0].0}} : {{ad.wordstop20[0].1}}<br>
+            {{ad.wordstop20[0].0}} : {{ad.wordstop20[0].1}}<br>
+            {{ad.wordstop20[0].0}} : {{ad.wordstop20[0].1}}<br>
         </div>
-        <br>
-        <div>
-            <div>
-                {{ad.wordstop20[0]}}
-                {{ad.name}}
-            </div>
-            <div>
-
-            </div>
+        <div class="data words like">
+            好きなワード6
+            <br>
+            {{ad.wordsliketop20[0].0}} : {{ad.wordsliketop20[0].1}}<br>
+            {{ad.wordsliketop20[0].0}} : {{ad.wordsliketop20[0].1}}<br>
+            {{ad.wordsliketop20[0].0}} : {{ad.wordsliketop20[0].1}}<br>
+            {{ad.wordsliketop20[0].0}} : {{ad.wordsliketop20[0].1}}<br>
+            {{ad.wordsliketop20[0].0}} : {{ad.wordsliketop20[0].1}}<br>
+            {{ad.wordsliketop20[0].0}} : {{ad.wordsliketop20[0].1}}<br>
         </div>
-    </article>
-    {% endfor %}
+        <div class="data words score">
+            ツイートスコア
+            <br>
+            HOBBY:{{ad.score.hobby}}<br>
+            SEX:{{ad.score.sex}}<br>
+            JOB:{{ad.score.job}}<br>
+            LONELI:{{ad.score.loneli}}<br>
+            HOME:{{ad.score.home}}<br>
+            MENTAL:{{ad.score.mental}}<br>
+        </div>
     </div>
-    <br>
-    <button id="viewbutton">ここ</button>
-    <script type="module" src="static/js/index.js"></script>
+    {% endfor %}
 {% endblock %}

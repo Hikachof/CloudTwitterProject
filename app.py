@@ -154,6 +154,19 @@ def userlist():
                     break;
         return render_template("userlist.html", alldatas=alldatas)
 
+@app.route("/userdata", methods=['GET'])
+def userdata():
+    if request.method == 'GET':
+        alldata = g.GetAllUserData("@enako_cos")
+        return render_template("userdata.html", alldata=alldata)
+
+#===================================================================================================================
+#== テストサイト
+#===================================================================================================================
+@app.route("/selection", methods=['GET'])
+def selection():
+    if request.method == 'GET':
+        return render_template("selection.html")
 #===================================================================================================================
 #== AjaxによるJSからの呼び出し関数（というかAPIというべきか）
 #===================================================================================================================

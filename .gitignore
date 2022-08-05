@@ -1,0 +1,8 @@
+*
+!.gitignore
+!templates
+!app.py
+!main.py
+!LineSystem.py
+!static/css/
+!static/js/

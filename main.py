@@ -35,9 +35,11 @@ def OpenServer():
     DoPowerShell("export FLASK_APP=app")
     DoPowerShell("gnome-terminal -- flask run")
     #
+    time.sleep(1)
     DoPowerShell("gnome-terminal -- ngrok http 5000")    
     time.sleep(1)
     DoPowerShell("sh clipserverurl.sh")
+    time.sleep(1)
 
 
     ms = pyperclip.paste()
@@ -114,6 +116,6 @@ if __name__ == '__main__':
         DoLineMessage(serverurl)
 
         # サブルーチンによる並行処理
-        executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
-        executor.submit(Routine01, serverurl)
-        executor.submit(Routine02)
+        #executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
+        #executor.submit(Routine01, serverurl)
+        #executor.submit(Routine02)
