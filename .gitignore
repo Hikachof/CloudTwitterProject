@@ -1,8 +1,5 @@
-*
-!.gitignore
-!templates
-!app.py
-!main.py
-!LineSystem.py
-!static/css/
-!static/js/
+__pycache__
+datas
+static/datas/
+venv
+Twitter.db

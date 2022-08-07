@@ -1,0 +1,158 @@
+
+:root {
+    --databoxsize-x: 320px;
+    --databoxsize-y: 400px;
+    --dataimgsize: 50px;
+}
+
+
+
+
+/* New Data */
+.maxdatas {
+    background: #eee;
+    display: grid;
+    grid-template: 
+        "icon     twnum   " 100px
+        "icon     name    " 20px
+        "icon     id      " 20px
+        "nwords   nwords  "
+        "section_n section_n" 
+        "lwords   lwords  " 
+        "section_l section_l" 
+        "scores   scores  " 
+        "twimg_1  twimg_1 " 300px
+        "twimg_2  twimg_2 " 300px
+        "twimg_3  twimg_3 " 300px
+        "twimg_4  twimg_4 " 300px
+        "twimg_5  twimg_5 " 300px
+        "twimg_6  twimg_6 " 300px
+        "twimg_7  twimg_7 " 300px
+        / 140px  1fr
+        ;
+}
+
+
+.data {
+    width: auto;
+}
+
+
+.data.icon{
+    grid-area: icon;
+}
+img {
+    width: 100%;
+    height: 100%;
+}
+
+.data.twnum {
+    grid-area: twnum;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.data.name {
+    grid-area: name;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 15px;
+}
+
+.data.id {
+    grid-area: id;
+    font-size: 15px;
+}
+
+.data.words {
+    width: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.section_n {
+    grid-area: section_n;
+
+    display: flex;
+    gap: 20px;
+    max-width: 450px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    box-shadow: 0 3px 10px 0 rgba(#000, 0.1);
+    -webkit-overflow-scrolling: touch;
+    scroll-padding: 1rem;
+    padding: 1rem;
+    margin: 3rem auto 0;
+    border-radius: 5px;
+}
+.section_l {
+    grid-area: section_l;
+
+    display: flex;
+    gap: 20px;
+    max-width: 450px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    box-shadow: 0 3px 10px 0 rgba(#000, 0.1);
+    -webkit-overflow-scrolling: touch;
+    scroll-padding: 1rem;
+    padding: 1rem;
+    margin: 3rem auto 0;
+    border-radius: 5px;
+}
+
+.data.words_s {
+    display: flex;
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    flex: 0 0 300px;
+    width: 300px;
+    height: 220px;
+    scroll-snap-align: start;
+    background-color: #ccc;
+    font-size: 10px;
+}
+
+.data.nwords {
+    grid-area: nwords;
+}
+.data.nwords_s {
+    grid-area: nwords_s;
+}
+.data.lwords {
+    grid-area: lwords;
+}
+.data.lwords_s {
+    grid-area: lwords_s;
+}
+.data.scores {
+    grid-area: scores;
+}
+
+.data.twimg {
+    width: 100%;
+}
+.data.twimg.t1 {
+    grid-area: twimg_1;
+}
+.data.twimg.t2 {
+    grid-area: twimg_2;
+}
+.data.twimg.t3 {
+    grid-area: twimg_3;
+}
+.data.twimg.t4 {
+    grid-area: twimg_4;
+}
+.data.twimg.t5 {
+    grid-area: twimg_5;
+}
+.data.twimg.t6 {
+    grid-area: twimg_6;
+}
+.data.twimg.t7 {
+    grid-area: twimg_7;
+}

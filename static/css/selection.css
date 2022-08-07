@@ -1,0 +1,45 @@
+.section {
+    display: flex;
+    gap: 20px;
+    max-width: 450px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    box-shadow: 0 3px 10px 0 rgba(#000, 0.1);
+    -webkit-overflow-scrolling: touch;
+    scroll-padding: 1rem;
+    padding: 1rem;
+    margin: 3rem auto 0;
+    border-radius: 5px;
+  }
+  
+  .section__item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 300px;
+    width: 30px;
+    height: 150px;
+    scroll-snap-align: start;
+    background-color: #ccc;
+    font-size: 1.5rem;
+  }
+
+  .bg-1 {
+    background-color: #f1c2c6;
+  }
+  
+  .bg-2 {
+    background-color: #dac2f1;
+  }
+  
+  .bg-3 {
+    background-color: #ccf1c2;
+  }
+  
+  .bg-4 {
+    background-color: #c2e9f1;
+  }
+  
+  .bg-5 {
+    background-color: #f1ebc2;
+  }

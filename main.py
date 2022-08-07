@@ -111,11 +111,17 @@ def Routine02():
 
 if __name__ == '__main__':
     if True:
-        serverurl = OpenServer()
-        print("SERVERURL : " + serverurl)
-        DoLineMessage(serverurl)
+        #
+        for i in range(5):
+            serverurl = OpenServer()
+            if serverurl:
+                break
+        #
+        if serverurl:
+            print("SERVERURL : " + serverurl)
+            DoLineMessage(serverurl)
 
-        # サブルーチンによる並行処理
-        #executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
-        #executor.submit(Routine01, serverurl)
-        #executor.submit(Routine02)
+            # サブルーチンによる並行処理
+            #executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
+            #executor.submit(Routine01, serverurl)
+            #executor.submit(Routine02)

@@ -1,0 +1,76 @@
+input[type="radio"]{
+    display: none; /* ラジオボタンを非表示にする */
+}
+input:checked + label {
+    background: #31A9EE;/* マウス選択時の背景色を指定する */
+    color: #ffffff; /* マウス選択時のフォント色を指定する */
+}
+.bu1:hover {
+    background-color: #E2EDF9; /* マウスオーバー時の背景色を指定する */
+}
+
+p {
+    float:none;
+    position:static;
+    clear: both;
+}
+
+.bu1 {
+    display: block; /* ブロックレベル要素化する */
+    float: left; /* 要素の左寄せ・回り込を指定する */
+    margin: 5px; /* ボックス外側の余白を指定する */
+    width: 50px; /* ボックスの横幅を指定する */
+    height: 20px; /* ボックスの高さを指定する */
+    padding-left: 5px; /* ボックス内左側の余白を指定する */
+    padding-right: 5px; /* ボックス内御右側の余白を指定する */
+    color: #b20000; /* フォントの色を指定 */
+    text-align: center; /* テキストのセンタリングを指定する */
+    line-height: 20px; /* 行の高さを指定する */
+    cursor: pointer; /* マウスカーソルの形（リンクカーソル）を指定する */
+    border: 2px solid #006DD9;/* ボックスの境界線を実線で指定する */
+    border-radius: 5px; /* 角丸を指定する */
+}
+
+.clear_bu {
+    clear: both;
+}
+
+.clear_all {
+    float:none;
+    position:static;
+    clear: both;
+}
+
+.perfect-circle {
+    width: var(--r, 150px);
+    height: var(--h, 150px);
+    border-radius: 50%;
+    background: #0091EA;
+}
+
+.hexagon-1 {
+    position: relative;
+    width: 150px;
+    height: 130px;
+}
+
+.hexagon-1::before {
+    content: "";
+    width: 150px;
+    position: absolute;
+    border-bottom: 64.95px solid #3cb371;
+    border-left: 37.5px solid transparent;
+    border-right: 37.5px solid transparent;
+    box-sizing: border-box;
+}
+
+.hexagon-1::after {
+    content: "";
+    width: 150px;
+    position: absolute;
+    top: 64.95px;
+    border-top: 64.95px solid #3cb371;
+    border-left: 37.5px solid transparent;
+    border-right: 37.5px solid transparent;
+    box-sizing: border-box;
+}

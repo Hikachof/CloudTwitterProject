@@ -1,0 +1,60 @@
+
+:root {
+    --databoxsize-x: 320px;
+    --databoxsize-y: 400px;
+    --dataimgsize: 50px;
+}
+
+
+
+
+/* New Data */
+.minidatas {
+    background: #eee;
+    display: grid;
+    grid-template: 
+        "icon    ...     words   wlikes  scores  " 100px
+        "name    ...     words   wlikes  scores  " 15px
+        "id      ...     words   wlikes  scores  " 15px
+        / 100px  3px     1fr     1fr     1fr
+        ;
+}
+
+
+.data {
+    width: auto;
+}
+
+
+.data.icon img {
+    grid-area: icon;
+    width: 100%;
+    height: 100%;
+}
+
+.data.name {
+    grid-area: name;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.data.id {
+    grid-area: id;
+}
+
+.data.words {
+    width: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.data.words.normal {
+    grid-area: words;
+}
+.data.words.like {
+    grid-area: wlikes;
+}
+.data.words.score {
+    grid-area: scores;
+}

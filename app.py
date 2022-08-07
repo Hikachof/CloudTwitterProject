@@ -158,7 +158,8 @@ def userlist():
 def userdata():
     if request.method == 'GET':
         alldata = g.GetAllUserData("@enako_cos")
-        return render_template("userdata.html", alldata=alldata)
+        print(alldata["tweetgraph_year_path"])
+        return render_template("userdata.html", ad=alldata)
 
 #===================================================================================================================
 #== テストサイト
@@ -172,7 +173,7 @@ def selection():
 #===================================================================================================================
 # 初めから３０ずつ取れるし、指定した場所から開始することもできる
 # endnumによって前回の終了地点を得ることによってそこからの続きを得ることができる
-@app.route("/increment", methods=["POST"])
+@app.route("/getalldata", methods=["POST"])
 def GetAllData():
     # JSからの変数を取得している
     req = request.form
@@ -197,7 +198,31 @@ def GetAllData():
 
     res = {"alldatas": alldatas, "endnum": endnum+1}
     return jsonify(res)
+@app.route("/getuserdata", methods=["POST"])
+def GetUserData():
+    # JSからの変数を取得している
+    id = request.form.get("id")
+    
+    alldata = g.GetAllUserData(id)
+    
+    res = {"alldata": alldata}
+    return jsonify(res)
+@app.route("/gettweets", methods=["POST"])
+def GetTweets():
+    # JSからの変数を取得している
+    id = request.form.get("id")
+    nums = request.form.getlist("nums[]")
+    # 
+    #print(nums)
+    tws = g.LoadData(r"Users/" + id, "Tweet")
+    tweets = []
+    for num in nums:
+        num = int(num)
+        tweets.append({"tw":tws[num]["tweet"], "date": tws[num]["datetime"].split("T")[0]})
 
+    res = {"tweets": tweets, "targetid": request.form.get("targetid")}
+    #print(res)
+    return jsonify(res)
 #===================================================================================================================
 #== 使いやすい関数
 #===================================================================================================================
