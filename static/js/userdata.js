@@ -3,8 +3,10 @@ import {getPythonData, drawErr} from "./base.js";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // UserData関連
 //
+// クエリパラメータから取得する
+let id = location.href.split("?id=")[1];
 const takeurl = "/getuserdata";
-const takedata = {"id": "@enako_cos"};
+const takedata = {"id": id};
 getPythonData(takeurl, takedata, drawSuc_userdata, drawErr);
 
 function drawSuc_userdata(response){
@@ -23,7 +25,7 @@ function drawSuc_userdata(response){
     // ツイート情報
     let elem_twnum = document.createElement("div");
     elem_twnum.className = "data twnum";
-    elem_twnum.innerText = "収集期間：" + ad.startdatetime + " > > > " + ad.enddatetime;
+    elem_twnum.innerText = "収集期間：" + ad.startdatetime + " > > > " + ad.enddatetime + "\n";
     elem_twnum.innerText += "総ツイート情報\n"
     elem_twnum.innerText += "ツイート数：" + ad.tweetcount + "\n";
     elem_twnum.innerText += "いいね数：" + ad.likecount + "\n";
@@ -39,6 +41,29 @@ function drawSuc_userdata(response){
     elem_id.innerText = " ID：" + ad.id;
     elem_base.appendChild(elem_name);
     elem_base.appendChild(elem_id);
+    // Links
+    const e_links = ad.links;
+    let elem_links = document.createElement("div");
+    elem_links.className = "data link"
+    elem_links.innerText = "リンク\n"
+    if (e_links != null)
+    {
+        for (let i = 0; i < e_links.length; i++) {
+            let link = ad.links[i];
+            let elem_link = document.createElement("a");
+            // 最初に存在しない場合はそれを追加する
+            if (link.indexOf("http") == -1)
+            {
+                link = "https://" + link;
+            }
+            elem_link.href = link;
+            elem_link.role = "button";
+            elem_link.innerText = link;
+            elem_links.appendChild(elem_link);
+            elem_links.appendChild(make_elem_br())
+        }
+    }
+    elem_base.appendChild(elem_links);
     // よく呟くワード
     let elem_nwords = document.createElement("div");
     elem_nwords.className = "data words nwords";
@@ -49,12 +74,13 @@ function drawSuc_userdata(response){
     for (let i = 0; i < ad.wordstop20.length; i++) {
         const w = ad.wordstop20[i];
         let elem_w_button = document.createElement("button");
+        const word = w[0];
         elem_w_button.id = "w_btn" + String(i);
         elem_w_button.innerText = w[0] + "：" + String(w[1].length);
         elem_w_button.addEventListener("click", function() {
             const takeurl = "/gettweets";
             const nums = w[1];
-            const takedata = {"id": ad.id, "nums" : nums, "targetid": "nwords_s"};
+            const takedata = {"id": ad.id, "nums" : nums, "targetid": "nwords_s", "word": word};
             getPythonData(takeurl, takedata, drawSuc_tweets, drawErr);
         });
         elem_nwords.appendChild(elem_w_button);
@@ -77,12 +103,13 @@ function drawSuc_userdata(response){
     for (let i = 0; i < ad.wordsliketop20.length; i++) {
         const l = ad.wordsliketop20[i];
         let elem_l_button = document.createElement("button");
+        const word = l[0];
         elem_l_button.id = "l_btn" + String(i);
         elem_l_button.innerText = l[0] + "：" + String(l[1].length);
         elem_l_button.addEventListener("click", function() {
             const takeurl = "/gettweets";
             const nums = l[1];
-            const takedata = {"id": ad.id, "nums" : nums, "targetid": "lwords_s"};
+            const takedata = {"id": ad.id, "nums" : nums, "targetid": "lwords_s", "word": word};
             getPythonData(takeurl, takedata, drawSuc_tweets, drawErr);
         });
         elem_lwords.appendChild(elem_l_button);
@@ -99,7 +126,7 @@ function drawSuc_userdata(response){
     elem_score.className = "data words scores";
     let elem_score_title = document.createElement("div");
     elem_score_title.style.cssText = "font-size: 14px";
-    elem_score_title.innerText = "☆ツイートスコア";
+    elem_score_title.innerText = "☆ツイートスコア\n";
     elem_score.appendChild(elem_score_title);
     elem_score.innerText += "・HOBBY：" + ad.score.hobby + "\n";
     elem_score.innerText += "・SEX：" + ad.score.sex + "\n";
@@ -144,7 +171,7 @@ function drawSuc_userdata(response){
             let elem_tw = document.createElement("div");
             elem_tw.className = "data words_s ";
             
-            elem_tw.innerText += tweet["date"] + "：" + String(count) + "/" + String(tweetnum);
+            elem_tw.innerText += tweet["date"] + "：" + String(count) + "/" + String(tweetnum) + "：" + response["word"];
             elem_tw.innerText += "\n";
             elem_tw.innerText += tweet["tw"];
             elem_nwords_s.appendChild(elem_tw);

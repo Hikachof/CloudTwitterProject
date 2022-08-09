@@ -157,9 +157,7 @@ def userlist():
 @app.route("/userdata", methods=['GET'])
 def userdata():
     if request.method == 'GET':
-        alldata = g.GetAllUserData("@enako_cos")
-        print(alldata["tweetgraph_year_path"])
-        return render_template("userdata.html", ad=alldata)
+        return render_template("userdata.html")
 
 #===================================================================================================================
 #== テストサイト
@@ -212,6 +210,7 @@ def GetTweets():
     # JSからの変数を取得している
     id = request.form.get("id")
     nums = request.form.getlist("nums[]")
+    word = request.form.get("word")
     # 
     #print(nums)
     tws = g.LoadData(r"Users/" + id, "Tweet")
@@ -220,7 +219,7 @@ def GetTweets():
         num = int(num)
         tweets.append({"tw":tws[num]["tweet"], "date": tws[num]["datetime"].split("T")[0]})
 
-    res = {"tweets": tweets, "targetid": request.form.get("targetid")}
+    res = {"tweets": tweets, "word": word, "targetid": request.form.get("targetid")}
     #print(res)
     return jsonify(res)
 #===================================================================================================================

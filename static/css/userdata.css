@@ -16,6 +16,7 @@
         "icon     twnum   " 100px
         "icon     name    " 20px
         "icon     id      " 20px
+        "link     link    "
         "nwords   nwords  "
         "section_n section_n" 
         "lwords   lwords  " 
@@ -58,12 +59,16 @@ img {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 15px;
+    font-size: 11px;
 }
 
 .data.id {
     grid-area: id;
-    font-size: 15px;
+    font-size: 11px;
+}
+
+.data.link {
+    grid-area: link;
 }
 
 .data.words {
