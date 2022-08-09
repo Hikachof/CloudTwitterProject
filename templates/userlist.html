@@ -3,7 +3,27 @@
 {% block content %}
     <link rel="stylesheet" href="static/css/userlist.css">
     <h1 class="title">ユーザーリスト</h1>
+    <label for="score_hobby">HOBBY倍率：</label>
+    <input id="score_hobby" type="number" name="score_hobby" value="1" min="0" max="10">
+    <label for="score_sex">SEX倍率：</label>
+    <input id="score_sex" type="number" name="score_sex" value="1" min="0" max="10">
+    <label for="score_job">JOB倍率：</label>
+    <input id="score_job" type="number" name="score_job" value="1" min="0" max="10">
+    <br>
+    <label for="score_loneli">LONELI倍率：</label>
+    <input id="score_loneli" type="number" name="score_loneli" value="1" min="0" max="10">
+    <label for="score_home">HOME倍率：</label>
+    <input id="score_home" type="number" name="score_home" value="1" min="0" max="10">
+    <label for="score_mental">MENTAL倍率：</label>
+    <input id="score_mental" type="number" name="score_mental" value="1" min="0" max="10">
+    <br>
+    <button id="scoresort" class="btn btn--orange">並び替える</button>
+    <br>
+    <label for="nameserach">検索：</label>
+    <input id="nameserach" type="text" name="nameserach">
+    <br>
+    <button id="btn_nameserach" class="btn btn--orange">名前で検索</button>
     <article id="userlist"></article>
-    <button id="viewbutton">もっと表示する</button>
+    <button id="viewbutton" class="btn btn--orange">もっと表示する</button>
     <script src="static/js/userlist.js" type="module"></script>
 {% endblock %}

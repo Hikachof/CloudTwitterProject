@@ -22,6 +22,8 @@
         "lwords   lwords  " 
         "section_l section_l" 
         "scores   scores  " 
+        "scoresdata scoresdata"
+        "section_score section_score"
         "twimg_1  twimg_1 " 300px
         "twimg_2  twimg_2 " 300px
         "twimg_3  twimg_3 " 300px
@@ -108,6 +110,21 @@ img {
     margin: 3rem auto 0;
     border-radius: 5px;
 }
+.section_score {
+    grid-area: section_score;
+
+    display: flex;
+    gap: 20px;
+    max-width: 450px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    box-shadow: 0 3px 10px 0 rgba(#000, 0.1);
+    -webkit-overflow-scrolling: touch;
+    scroll-padding: 1rem;
+    padding: 1rem;
+    margin: 3rem auto 0;
+    border-radius: 5px;
+}
 
 .data.words_s {
     display: flex;
@@ -135,6 +152,12 @@ img {
 }
 .data.scores {
     grid-area: scores;
+}
+.data.scorewords {
+    grid-area: scorewords;
+}
+.data.scorewords_s {
+    grid-area: scorewords_s;
 }
 
 .data.twimg {

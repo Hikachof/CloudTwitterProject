@@ -141,18 +141,7 @@ def addtweet():
 @app.route("/userlist", methods=['GET'])
 def userlist():
     if request.method == 'GET':
-        count = 0
-        alldatas = []
-        files = glob.glob("static/datas/Users/@*")
-        for fi in files:
-            id = fi.split("/")[-1]
-            alldata = g.GetAllUserData(id)
-            if alldata and alldata != "empty":
-                alldatas.append(alldata)
-                count += 1;
-                if count > 29:
-                    break;
-        return render_template("userlist.html", alldatas=alldatas)
+        return render_template("userlist.html")
 
 @app.route("/userdata", methods=['GET'])
 def userdata():
@@ -171,6 +160,7 @@ def selection():
 #===================================================================================================================
 # 初めから３０ずつ取れるし、指定した場所から開始することもできる
 # endnumによって前回の終了地点を得ることによってそこからの続きを得ることができる
+userlist_sortdata = []
 @app.route("/getalldata", methods=["POST"])
 def GetAllData():
     # JSからの変数を取得している
@@ -184,7 +174,12 @@ def GetAllData():
     #for i,fi in enumerate(files):
     maxnum = len(files)
     for i in range(startnum, maxnum):
-        fi = files[i]
+        print(userlist_sortdata)
+        if userlist_sortdata:
+            fi = files[userlist_sortdata[i]]
+            print(userlist_sortdata)
+        else:
+            fi = files[i]
         endnum = i
         id = fi.split("/")[-1]
         alldata = g.GetAllUserData(id)
@@ -196,6 +191,50 @@ def GetAllData():
 
     res = {"alldatas": alldatas, "endnum": endnum+1}
     return jsonify(res)
+
+# すべてのデータをソートしてその並びをデータとして取得する
+@app.route("/userlist_sort", methods=['POST'])
+def userlist_sort():
+    userlist_sortdata.clear()
+
+    req = request.form
+    hobby = int(req.get("hobby"))
+    sex = int(req.get("sex"))
+    job = int(req.get("job"))
+    loneli = int(req.get("loneli"))
+    home = int(req.get("home"))
+    mental = int(req.get("mental"))
+    if request.method == 'POST':
+        files = glob.glob("static/datas/Users/@*")
+        alldatas = {}
+        for i,fi in enumerate(files):
+            id = fi.split("/")[-1]
+            alldata = g.GetAllUserData(id)
+            if alldata and alldata != "empty":
+                # ツイート数が一定量内を排除する
+                tweetcount = alldata["tweetcount"]
+                if tweetcount > 100:
+                    # score
+                    score = 0
+                    score += alldata["score"]["hobby"] * hobby
+                    score += alldata["score"]["sex"] * sex
+                    score += alldata["score"]["job"] * job
+                    score += alldata["score"]["loneli"] * loneli
+                    score += alldata["score"]["home"] * home
+                    score += alldata["score"]["mental"] * mental
+                    #
+                    # ツイート数によって割ることによって正しい評価を行う
+                    # 今まではツイート数が多いほど有利になっていた
+                    alldatas[i] = (score*100)/tweetcount
+        # ソートして配列Numを得る
+        alldatas = sorted(alldatas.items(), key=lambda x:x[1], reverse=True)
+        for ad in alldatas:
+            userlist_sortdata.append(ad[0])
+
+        #print(userlist_sortdata)
+        res = {"suc": "suc"}
+        return jsonify(res)
+        
 @app.route("/getuserdata", methods=["POST"])
 def GetUserData():
     # JSからの変数を取得している

@@ -46,6 +46,13 @@ function drawSuc_userdata(response){
     let elem_links = document.createElement("div");
     elem_links.className = "data link"
     elem_links.innerText = "リンク\n"
+    // Twitter Link
+    let elem_link = document.createElement("a");
+    elem_link.href = "https://twitter.com/" + ad.id;
+    elem_link.role = "button";
+    elem_link.innerText = "Twitterへ";
+    elem_links.appendChild(elem_link);
+    elem_links.appendChild(make_elem_br())
     if (e_links != null)
     {
         for (let i = 0; i < e_links.length; i++) {
@@ -128,13 +135,63 @@ function drawSuc_userdata(response){
     elem_score_title.style.cssText = "font-size: 14px";
     elem_score_title.innerText = "☆ツイートスコア\n";
     elem_score.appendChild(elem_score_title);
-    elem_score.innerText += "・HOBBY：" + ad.score.hobby + "\n";
-    elem_score.innerText += "・SEX：" + ad.score.sex + "\n";
-    elem_score.innerText += "・JOB：" + ad.score.job + "\n";
-    elem_score.innerText += "・LONELI：" + ad.score.loneli + "\n";
-    elem_score.innerText += "・HOME：" + ad.score.home + "\n";
-    elem_score.innerText += "・MENTAL：" + ad.score.mental + "\n";
+    let elem_scorewords = document.createElement("div");
+    elem_scorewords.className = "data words scorewords";
+    let elem_scorewords_title = document.createElement("div");
+    elem_scorewords_title.style.cssText = "font-size: 14px";
+    elem_scorewords_title.innerText = "☆ツイートワード\n";
+    elem_scorewords.appendChild(elem_scorewords_title);
+    //
+    let elem_scorewords_s = document.createElement("div");
+    elem_scorewords_s.className = "section_score";
+    elem_scorewords_s.id = "scorewords_s"
+    elem_base.appendChild(elem_scorewords_s);
+    //
+    let scorecount = 0;
+    for (let key in ad.score) 
+    {
+        if (key != "data")
+        {
+            let elem_score_button = document.createElement("button");
+            elem_score_button.id = "score_btn" + String(scorecount);
+            scorecount += 1;
+            elem_score_button.innerText = key + "：" + ad.score[key];
+            elem_score_button.addEventListener("click", function() {
+                while( elem_scorewords.firstChild ){
+                    elem_scorewords.removeChild( elem_scorewords.firstChild );
+                }
+                let scorewordcount = 0;
+                let elem_scorewords_title = document.createElement("div");
+                elem_scorewords_title.style.cssText = "font-size: 14px";
+                elem_scorewords_title.innerText = "☆ツイートワード\n";
+                elem_scorewords.appendChild(elem_scorewords_title);
+                // データの中のワードを設定する
+                for (let sw in ad.score["data"])
+                {
+                    // keyが含まれているものを描画する
+                    if (sw.indexOf(key) != -1)
+                    {
+                        let elem_scoreword_button = document.createElement("button");
+                        elem_scoreword_button.id = "scoreword_btn" + String(scorewordcount);
+                        elem_scoreword_button.innerText = sw + "：" + ad.score["data"][sw]["score"] + "\n";
+                        elem_scorewords.appendChild(elem_scoreword_button);
+                        elem_scorewords.appendChild(make_elem_br());
+                        scorewordcount += 1;
+                        elem_scoreword_button.addEventListener("click", function() {
+                            const takeurl = "/gettweets";
+                            const nums = ad.score["data"][sw]["num"];
+                            const takedata = {"id": ad.id, "nums" : nums, "targetid": "scorewords_s", "word": sw};
+                            getPythonData(takeurl, takedata, drawSuc_tweets, drawErr);
+                        });
+                    }
+                }
+            });
+            elem_score.appendChild(elem_score_button);
+            elem_score.appendChild(make_elem_br());
+        }
+    }
     elem_base.appendChild(elem_score);
+    elem_base.appendChild(elem_scorewords);
     //
     function addTWImg(className, src){
         let elem_t1 = document.createElement("div");

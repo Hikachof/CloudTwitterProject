@@ -3,6 +3,7 @@ import {getPythonData, drawErr} from "./base.js";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // UserList関連
 //
+
 // AllDataをゲットした前回の場所
 let endnum = 0;
 // 新しくユーザーリストを追加して描画する
@@ -12,6 +13,47 @@ elem_viewbutton.addEventListener("click", function() {
     const takedata = {"startnum" : endnum};
     getPythonData(takeurl, takedata, drawSuc_userlist, drawErr);
 });
+// 指定した順番で並び替える
+const elem_btn_serach = document.getElementById("btn_nameserach");
+elem_btn_serach.addEventListener("click", function() {
+    let id = document.getElementById("nameserach").value;
+    if (id[0] != "@")
+    {
+        id = "@" + id;
+    }
+    var takeurl = "/userdata?id=" + id;
+    window.location.href = takeurl;
+});
+// 指定した順番で並び替える
+const elem_btn_sort = document.getElementById("scoresort");
+elem_btn_sort.addEventListener("click", function() {
+    // スコアを得る
+    const score_hobby = document.getElementById("score_hobby").value;
+    const score_sex = document.getElementById("score_sex").value;
+    const score_job = document.getElementById("score_job").value;
+    const score_loneli = document.getElementById("score_loneli").value;
+    const score_home = document.getElementById("score_home").value;
+    const score_mental = document.getElementById("score_mental").value;
+
+    var takeurl = "/userlist_sort";
+    var takedata = {"hobby" : score_hobby, "sex" : score_sex, "job" : score_job, "loneli" : score_loneli, "home" : score_home, "mental" : score_mental};
+    
+    //console.log(takeurl);
+    //window.open(takeurl);
+    getPythonData(takeurl, takedata, drawSuc_userlist_sort, drawErr);
+});
+function drawSuc_userlist_sort(response){
+    // 中身を削除してソートした中身に入れ替える
+    const elem_userlist = document.getElementById("userlist");
+    while( elem_userlist.firstChild ){
+        elem_userlist.removeChild( elem_userlist.firstChild );
+    }
+
+    endnum = 0;
+    const takeurl = "/getalldata";
+    const takedata = {"startnum" : endnum};
+    getPythonData(takeurl, takedata, drawSuc_userlist, drawErr);
+}
 // Ajaxの呼び出しが成功したときに呼び出される関数
 function drawSuc_userlist(response){
     //console.log(response["alldatas"])
@@ -75,7 +117,7 @@ function drawSuc_userlist(response){
                 break;
             }
             let words20 = e_wordstop20[i];
-            elem_wordstop20.appendChild(document.createTextNode(words20[0] + " : " + words20[1]));
+            elem_wordstop20.appendChild(document.createTextNode(words20[0] + " : " + words20[1].length));
             elem_wordstop20.appendChild(make_elem_br());
         }
         elem_base.appendChild(elem_wordstop20);
@@ -91,7 +133,7 @@ function drawSuc_userlist(response){
                 break;
             }
             let words20 = e_wordsliketop20[i];
-            elem_wordsliketop20.appendChild(document.createTextNode(words20[0] + " : " + words20[1]));
+            elem_wordsliketop20.appendChild(document.createTextNode(words20[0] + " : " + words20[1].length));
             elem_wordsliketop20.appendChild(make_elem_br());
         }
         elem_base.appendChild(elem_wordsliketop20);
