@@ -6,7 +6,7 @@
     {% for post in posts %}
     <article>
     <p id="tw">{{post.tw}}</p>
-        <form action="/{{post.id}}" method="POST" enctype="multipart/form-data">
+        <form action="/tweetlist/{{post.id}}" method="POST" enctype="multipart/form-data">
             <h4>
                 <input type="radio" name="timesel" value="0" id="00">
                 <label for="00" class="bu1">00~</label>
@@ -27,8 +27,8 @@
                 <input type="radio" name="timesel" value="8" id="Now" checked>
                 <label for="Now" class="bu1">Now</label>
                 <p>
-                    <input href="/{{post.id}}" type="submit" name="dotweet" id="dotweet" value="ツイートする">
-                    <input href="/{{post.id}}" type="submit" name="dodelete" id="dodelete" value="削除">
+                    <input href="/tweetlist/{{post.id}}" type="submit" name="dotweet" id="dotweet" value="ツイートする">
+                    <input href="/tweetlist/{{post.id}}" type="submit" name="dodelete" id="dodelete" value="削除">
                 </p>
             </h4>
         </form>

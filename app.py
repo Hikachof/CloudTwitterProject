@@ -17,11 +17,13 @@ import sys
 import os
 import urllib.parse
 import glob
+import concurrent.futures
+from LineSystem import LineSystem
 
 folder_path = "/home/hikachof/ドキュメント/VSCode/Pythons/TwitterProject/Source/"
 sys.path.insert(0, folder_path)
 import General as g
-
+import AutoTweetGetter as atg
 
 debug = False
 
@@ -241,8 +243,11 @@ def GetUserData():
     id = request.form.get("id")
     
     alldata = g.GetAllUserData(id)
-    
-    res = {"alldata": alldata}
+    if alldata and alldata != "empty":
+        res = {"alldata": alldata}
+    else:
+        res = {"alldata": None}
+
     return jsonify(res)
 @app.route("/gettweets", methods=["POST"])
 def GetTweets():
@@ -261,9 +266,38 @@ def GetTweets():
     res = {"tweets": tweets, "word": word, "targetid": request.form.get("targetid")}
     #print(res)
     return jsonify(res)
+
+@app.route("/usersearch", methods=["POST"])
+def DoUserSearch():
+    # JSからの変数を取得している
+    id = request.form.get("id")
+    # サブルーチンで実行することによって処理を止めないって感じで
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+    executor.submit(Routine01, id)
+
+    res = {"suc": "suc"}
+    return jsonify(res)
 #===================================================================================================================
 #== 使いやすい関数
 #===================================================================================================================
+# LINEにメッセージを送る
+def DoLineMessage(mes):
+    linesys = LineSystem()
+    linesys.DoMessage(mes)
+
+# ツイートの作成とDBへの追加
+def Routine01(id):
+    ST = atg.ScrayTwitter("")
+    if ST.CheckAccount(id):
+        ST.AllGetTwittersEasy(id)
+        alldata = g.GetAllUserData(id)
+        if alldata and alldata != "empty":
+            DoLineMessage(id + "のデータ収集を完了しました")
+        else:
+            DoLineMessage(id + "のデータ収集がうまくいきませんでした")
+    else:
+        ST.Quit()
+        DoLineMessage(id + "：このアカウントは存在していません")
 
 # DB内のツイート予定のデータから現在ツイートすべきツイートを取得する
 # 取得されたツイートはDB内から削除される

@@ -26,7 +26,7 @@ function drawSuc_userdata(response){
     let elem_twnum = document.createElement("div");
     elem_twnum.className = "data twnum";
     elem_twnum.innerText = "収集期間：" + ad.startdatetime + " > > > " + ad.enddatetime + "\n";
-    elem_twnum.innerText += "総ツイート情報\n"
+    elem_twnum.innerText += "総ツイート情報：" + "Fw:" + ad.followercount + "：" + "Fwr:" + ad.followcount + "\n";
     elem_twnum.innerText += "ツイート数：" + ad.tweetcount + "\n";
     elem_twnum.innerText += "いいね数：" + ad.likecount + "\n";
     elem_twnum.innerText += "リツイート数：" + ad.retweetcount + "\n";

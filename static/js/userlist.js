@@ -4,6 +4,7 @@ import {getPythonData, drawErr} from "./base.js";
 // UserList関連
 //
 
+
 // AllDataをゲットした前回の場所
 let endnum = 0;
 // 新しくユーザーリストを追加して描画する
@@ -21,9 +22,33 @@ elem_btn_serach.addEventListener("click", function() {
     {
         id = "@" + id;
     }
-    var takeurl = "/userdata?id=" + id;
-    window.location.href = takeurl;
+    const takedata = {"id": id};
+    const takeurl = "/getuserdata";
+    //window.location.href = takeurl;
+    getPythonData(takeurl, takedata, function(response) {
+        const ad = response["alldata"];
+        if (ad)
+        {
+            const takeurl = "/userdata?id=" + id;
+            window.location.href = takeurl;
+        }
+        else
+        {
+            //document.write("そのIDは見つかりません");
+            window.confirm("そのIDは見つかりません");
+        }
+    }, drawErr);
 });
+// 新しくユーザーを追加する
+const elem_usersearch = document.getElementById("btn_usersearch")
+elem_usersearch.addEventListener("click", function() {
+    const takeurl = "/usersearch";
+    const takedata = {"id" : document.getElementById("nameserach").value};
+    getPythonData(takeurl, takedata, drawSuc_usersearch, drawErr);
+});
+function drawSuc_usersearch(response){
+    console.log(response);
+}
 // 指定した順番で並び替える
 const elem_btn_sort = document.getElementById("scoresort");
 elem_btn_sort.addEventListener("click", function() {
