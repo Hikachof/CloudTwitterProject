@@ -14,5 +14,8 @@ function getPythonData(takeurl, takedata, sucfunction, errfunction){
 function drawErr(error){
     console.log(error);
 }
+function drawSuc(response){
+    console.log(response);
+}
 
-export {getPythonData, drawErr};
+export {getPythonData, drawErr, drawSuc};

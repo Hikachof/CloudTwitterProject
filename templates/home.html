@@ -2,4 +2,16 @@
 {% extends "base.html" %}
 {% block content %}
     <h1>ここからアクセス</h1>
+    <label for="usersearch_word">指定したワードによる評価ユーザーの追加：</label>
+    <br>
+    <input id="usersearch_word" type="text" name="usersearch_word">
+    <br>
+    <button id="btn_usersearch_word" class="btn btn--orange">ワード検索</button>
+    <br>
+    <label for="usersearch_follower">指定したIDのフォローしている評価ユーザーの追加：</label>
+    <br>
+    <input id="usersearch_follower" type="text" name="usersearch_follower">
+    <br>
+    <button id="btn_usersearch_follower" class="btn btn--orange">フォロワー検索</button>
+    <script src="static/js/home.js" type="module"></script>
 {% endblock %}

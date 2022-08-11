@@ -32,6 +32,7 @@
     height: 100%;
 }
 
+
 .data.name {
     grid-area: name;
     white-space: nowrap;

@@ -153,10 +153,7 @@ def userdata():
 #===================================================================================================================
 #== テストサイト
 #===================================================================================================================
-@app.route("/selection", methods=['GET'])
-def selection():
-    if request.method == 'GET':
-        return render_template("selection.html")
+
 #===================================================================================================================
 #== AjaxによるJSからの呼び出し関数（というかAPIというべきか）
 #===================================================================================================================
@@ -191,7 +188,10 @@ def GetAllData():
             if count > 30:
                 break;
 
-    res = {"alldatas": alldatas, "endnum": endnum+1}
+    #
+    favuser = g.GetFavoriteUser()
+
+    res = {"alldatas": alldatas, "endnum": endnum+1, "favuser": favuser}
     return jsonify(res)
 
 # すべてのデータをソートしてその並びをデータとして取得する
@@ -267,16 +267,66 @@ def GetTweets():
     #print(res)
     return jsonify(res)
 
+#===================================================================================================================
+#== 呼び出して処理をさせる関数郡
+#===================================================================================================================
+# 指定したTwitterIDのデータを収集する
 @app.route("/usersearch", methods=["POST"])
 def DoUserSearch():
     # JSからの変数を取得している
     id = request.form.get("id")
     # サブルーチンで実行することによって処理を止めないって感じで
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-    executor.submit(Routine01, id)
+    executor.submit(worker)
+    # 指定したTwitterIDのデータを収集する
+    def worker():
+        ST = atg.ScrayTwitter()
+        if ST.CheckAccount(id):
+            ST.AllGetTwittersEasy(id)
+            alldata = g.GetAllUserData(id)
+            if alldata and alldata != "empty":
+                DoLineMessage(id + "のデータ収集を完了しました")
+            else:
+                DoLineMessage(id + "のデータ収集がうまくいきませんでした")
+        else:
+            DoLineMessage(id + "：このアカウントは存在していません")
+        ST.Quit()
 
-    res = {"suc": "suc"}
-    return jsonify(res)
+    return jsonify({"suc": "suc"})
+
+# 指定したワードをつぶやいているユーザーを評価してユーザー追加する
+@app.route("/searchtargetuser_word", methods=["POST"])
+def DoSearchTargetUser_Word():
+    # JSからの変数を取得している
+    word = request.form.get("word")
+    # サブルーチンで実行することによって処理を止めないって感じで
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+    executor.submit(worker)
+    # 指定したTwitterIDのデータを収集する
+    def worker():
+        ST = atg.ScrayTwitter()
+        ST.SearchTargetUser_Word(word)
+        ST.Quit()
+
+    return jsonify({"suc": "suc"})
+# 指定したUserがフォローしているユーザーを評価してユーザー追加する
+@app.route("/searchtargetuser_follower", methods=["POST"])
+def DoSearchTargetUser_Follower():
+    # JSからの変数を取得している
+    id = request.form.get("id")
+    # サブルーチンで実行することによって処理を止めないって感じで
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+    executor.submit(worker)
+    # 指定したTwitterIDのデータを収集する
+    def worker():
+        ST = atg.ScrayTwitter()
+        if ST.CheckAccount(id):
+            ST.SearchTargetUser_Follower(id)
+        else:
+            DoLineMessage(id + "：このアカウントは存在していません")
+        ST.Quit()
+
+    return jsonify({"suc": "suc"})
 #===================================================================================================================
 #== 使いやすい関数
 #===================================================================================================================
@@ -284,20 +334,6 @@ def DoUserSearch():
 def DoLineMessage(mes):
     linesys = LineSystem()
     linesys.DoMessage(mes)
-
-# ツイートの作成とDBへの追加
-def Routine01(id):
-    ST = atg.ScrayTwitter("")
-    if ST.CheckAccount(id):
-        ST.AllGetTwittersEasy(id)
-        alldata = g.GetAllUserData(id)
-        if alldata and alldata != "empty":
-            DoLineMessage(id + "のデータ収集を完了しました")
-        else:
-            DoLineMessage(id + "のデータ収集がうまくいきませんでした")
-    else:
-        ST.Quit()
-        DoLineMessage(id + "：このアカウントは存在していません")
 
 # DB内のツイート予定のデータから現在ツイートすべきツイートを取得する
 # 取得されたツイートはDB内から削除される

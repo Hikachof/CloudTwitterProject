@@ -1,4 +1,4 @@
-import {getPythonData, drawErr} from "./base.js";
+import {getPythonData, drawErr, drawSuc} from "./base.js";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // UserList関連
@@ -39,16 +39,14 @@ elem_btn_serach.addEventListener("click", function() {
         }
     }, drawErr);
 });
-// 新しくユーザーを追加する
+// 新しくTwitterIDをデータ収集する
 const elem_usersearch = document.getElementById("btn_usersearch")
 elem_usersearch.addEventListener("click", function() {
     const takeurl = "/usersearch";
     const takedata = {"id" : document.getElementById("nameserach").value};
-    getPythonData(takeurl, takedata, drawSuc_usersearch, drawErr);
+    getPythonData(takeurl, takedata, drawSuc, drawErr);
 });
-function drawSuc_usersearch(response){
-    console.log(response);
-}
+
 // 指定した順番で並び替える
 const elem_btn_sort = document.getElementById("scoresort");
 elem_btn_sort.addEventListener("click", function() {
@@ -87,6 +85,10 @@ function drawSuc_userlist(response){
     // 取得したAlldataによって要素を追加する
     endnum = response["endnum"];
     let alldatas = response["alldatas"];
+    //
+    const favuser = response["favuser"];
+
+    console.log(favuser);
 
     let count = 0;
 
@@ -96,6 +98,20 @@ function drawSuc_userlist(response){
         let e_wordstop20 = alldata.wordstop20;
         let e_wordsliketop20 = alldata.wordsliketop20;
         let e_score = alldata.score;
+
+        // お気に入りユーザーかチェックする
+        let isfavuser = false;
+        if (favuser != null)
+        {
+            for (let i = 0; i < favuser.length; i++) {
+                const fu = favuser[i];
+                if (fu == e_id)
+                {
+                    isfavuser = true;
+                    break;
+                }
+            }
+        }
     
         let elem_base = document.createElement("a");
         elem_base.href = "/userdata?id=" + e_id;
@@ -116,6 +132,14 @@ function drawSuc_userlist(response){
         let elem_icon_img = document.createElement("img");
         elem_icon_img.src = "static/datas/Users/" + alldata.id + "/" + alldata.icon_path;
         elem_icon.appendChild(elem_icon_img);
+        elem_icon.appendChild(elem_icon_img);
+        if (isfavuser)
+        {
+            let elem_star_img = document.createElement("img");
+            elem_star_img.src = "static/datas/star-outline.svg";
+            elem_star_img.className = "starimg";
+            elem_icon.appendChild(elem_star_img);
+        }
         elem_base.appendChild(elem_icon);
         // 名前やID
         let elem_name = document.createElement("div");

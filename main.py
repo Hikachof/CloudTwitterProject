@@ -122,6 +122,6 @@ if __name__ == '__main__':
             DoLineMessage(serverurl)
 
             # サブルーチンによる並行処理
-            executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
-            executor.submit(Routine01, serverurl)
-            executor.submit(Routine02)
+            #executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
+            #executor.submit(Routine01, serverurl)
+            #executor.submit(Routine02)

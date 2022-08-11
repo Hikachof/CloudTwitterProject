@@ -76,6 +76,17 @@ button {
     appearance: none;
 }
 
+.starimg {
+    opacity: .5;
+    max-width: 30px;
+    max-height: 30px;
+
+    position:relative;
+    bottom: 100px;
+	right: 0px;
+
+}
+
 /*まずはお決まりのボックスサイズ算出をborer-boxに */
 *,
 *:before,
