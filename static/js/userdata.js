@@ -3,6 +3,9 @@ import {getPythonData, drawErr, drawSuc} from "./base.js";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // UserData関連
 //
+
+let imgup_startnum = 0;
+
 // クエリパラメータから取得する
 let id = location.href.split("?id=")[1];
 const takeurl = "/getuserdata";
@@ -11,6 +14,23 @@ getPythonData(takeurl, takedata, drawSuc_userdata, drawErr);
 
 function drawSuc_userdata(response){
     const ad = response["alldata"];
+    const favuser = response["favuser"];
+
+    imgup_startnum = 0;
+
+    // お気に入りユーザーかチェックする
+    let isfavuser = false;
+    if (favuser != null)
+    {
+        for (let i = 0; i < favuser.length; i++) {
+            const fu = favuser[i];
+            if (fu == ad.id)
+            {
+                isfavuser = true;
+                break;
+            }
+        }
+    }
 
     const elem_base = document.getElementById("maxdatas");
     const make_elem_br = function () { return document.createElement("br"); }
@@ -21,12 +41,43 @@ function drawSuc_userdata(response){
     let elem_icon_img = document.createElement("img");
     elem_icon_img.src = "static/datas/Users/" + ad.id + "/" + ad.icon_path;
     elem_icon.appendChild(elem_icon_img);
+    // お気に入り管理
+    let elem_btn_star = document.createElement("button");
+    elem_btn_star.className = "starimg";
+    let elem_star_img = document.createElement("img");
+    elem_btn_star.addEventListener("click", function() {
+        const takeurl = "/togglefav";
+        const takedata = {"id": ad.id};
+        getPythonData(takeurl, takedata, function(response) {
+            const isfav = response["isfav"];
+            if (isfav)
+            {
+                elem_star_img.src = "static/datas/star.png";
+            }
+            else
+            {
+                elem_star_img.src = "static/datas/star_out.png";
+            }
+        }, drawErr);
+    });
+    
+    if (isfavuser)
+    {
+        elem_star_img.src = "static/datas/star.png";
+    }
+    else
+    {
+        elem_star_img.src = "static/datas/star_out.png";
+    }
+    elem_btn_star.appendChild(elem_star_img);
+    elem_icon.appendChild(elem_btn_star);
+    //
     elem_base.appendChild(elem_icon);
     // ツイート情報
     let elem_twnum = document.createElement("div");
     elem_twnum.className = "data twnum";
     elem_twnum.innerText = "収集期間：" + ad.startdatetime + " > > > " + ad.enddatetime + "\n";
-    elem_twnum.innerText += "総ツイート情報：" + "Fw:" + ad.followercount + "：" + "Fwr:" + ad.followcount + "\n";
+    elem_twnum.innerText += "総ツイート情報：" + "Fw:" + ad.followcount + "：" + "Fwr:" + ad.followercount + "\n";
     elem_twnum.innerText += "ツイート数：" + ad.tweetcount + "\n";
     elem_twnum.innerText += "いいね数：" + ad.likecount + "\n";
     elem_twnum.innerText += "リツイート数：" + ad.retweetcount + "\n";
@@ -71,6 +122,22 @@ function drawSuc_userdata(response){
         }
     }
     elem_base.appendChild(elem_links);
+    // 画像の参照
+    let elem_imgup = document.createElement("div");
+    elem_imgup.className = "section_iup";
+    elem_imgup.id = "imgup_s"
+    elem_base.appendChild(elem_imgup);
+    let elem_btn_imgup = document.createElement("button");
+    elem_btn_imgup.innerText = "もっと表示する";
+    elem_btn_imgup.id = "btn_imgup";
+    elem_btn_imgup.className = "imgup_btn"
+    elem_btn_imgup.addEventListener("click", function() {
+        const takeurl = "/getimgup";
+        const startnum = imgup_startnum;
+        const takedata = {"id": ad.id, "startnum" : startnum};
+        getPythonData(takeurl, takedata, drawSuc_imgup, drawErr);
+    });
+    elem_base.appendChild(elem_btn_imgup);
     // よく呟くワード
     let elem_nwords = document.createElement("div");
     elem_nwords.className = "data words nwords";
@@ -232,6 +299,23 @@ function drawSuc_userdata(response){
             elem_tw.innerText += "\n";
             elem_tw.innerText += tweet["tw"];
             elem_nwords_s.appendChild(elem_tw);
+        });
+    }
+    function drawSuc_imgup(response){
+        const imgs = response["imgs"];
+        const elem_imgup_s = document.getElementById("imgup_s");
+        const make_elem_br = function () { return document.createElement("br"); }
+
+        //const imgnum = response["imgnum"];
+        //let count = imgup_startnum;
+        imgup_startnum = response["endnum"];
+        imgs.forEach(function (ima) {
+            //count += 1;
+            let elem_img = document.createElement("img");
+            elem_img.className = "data imgup_s ";
+            elem_img.src = ima;
+            console.log(ima);
+            elem_imgup_s.appendChild(elem_img);
         });
     }
 }

@@ -5,7 +5,14 @@
     --dataimgsize: 50px;
 }
 
+.starimg {
+    max-width: 30px;
+    max-height: 30px;
 
+    position:relative;
+    bottom: 100px;
+	right: 0px;
+}
 
 
 /* New Data */

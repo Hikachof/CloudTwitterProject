@@ -15,3 +15,11 @@ elem_follower.addEventListener("click", function() {
     const takedata = {"word" : document.getElementById("usersearch_follower").value};
     getPythonData(takeurl, takedata, drawSuc, drawErr);
 });
+
+// お気に入りユーザーを深く検索する
+const elem_deepdownload = document.getElementById("btn_deepdownloaduser")
+elem_deepdownload.addEventListener("click", function() {
+    const takeurl = "/deepdownloaduser";
+    const takedata = {};
+    getPythonData(takeurl, takedata, drawSuc, drawErr);
+});

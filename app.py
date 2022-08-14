@@ -2,6 +2,7 @@
 #from crypt import methods
 from email.quoprimime import body_check
 from socket import IP_DROP_MEMBERSHIP
+from xmlrpc.client import boolean
 from flask import Flask, jsonify, make_response
 from flask import render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
@@ -173,8 +174,11 @@ def GetAllData():
     #for i,fi in enumerate(files):
     maxnum = len(files)
     for i in range(startnum, maxnum):
-        print(userlist_sortdata)
+        #print(userlist_sortdata)
         if userlist_sortdata:
+            if len(userlist_sortdata) <= i:
+                endnum = i
+                break
             fi = files[userlist_sortdata[i]]
             print(userlist_sortdata)
         else:
@@ -200,6 +204,7 @@ def userlist_sort():
     userlist_sortdata.clear()
 
     req = request.form
+    favonly = req.get("favonly") == "true"
     hobby = int(req.get("hobby"))
     sex = int(req.get("sex"))
     job = int(req.get("job"))
@@ -209,8 +214,13 @@ def userlist_sort():
     if request.method == 'POST':
         files = glob.glob("static/datas/Users/@*")
         alldatas = {}
+        favuser = g.GetFavoriteUser()
         for i,fi in enumerate(files):
             id = fi.split("/")[-1]
+            # お気に入りのみだった場合
+            if favonly:
+                if not (id in favuser):
+                    continue
             alldata = g.GetAllUserData(id)
             if alldata and alldata != "empty":
                 # ツイート数が一定量内を排除する
@@ -234,6 +244,7 @@ def userlist_sort():
             userlist_sortdata.append(ad[0])
 
         #print(userlist_sortdata)
+
         res = {"suc": "suc"}
         return jsonify(res)
         
@@ -244,7 +255,9 @@ def GetUserData():
     
     alldata = g.GetAllUserData(id)
     if alldata and alldata != "empty":
-        res = {"alldata": alldata}
+        #
+        favuser = g.GetFavoriteUser()
+        res = {"alldata": alldata, "favuser": favuser}
     else:
         res = {"alldata": None}
 
@@ -267,6 +280,29 @@ def GetTweets():
     #print(res)
     return jsonify(res)
 
+# ユーザーに関連したイメージを取得する
+@app.route("/getimgup", methods=["POST"])
+def GetImgUp():
+    # JSからの変数を取得している
+    id = request.form.get("id")
+    startnum = int(request.form.get("startnum"))
+
+    files = glob.glob(f"static/datas/Users/{id}/Images/*")
+    endnum = len(files)
+    count = 0
+    imgs = []
+    finnum = startnum
+    for i in range(startnum, endnum):
+        finnum = i
+        imgs.append(files[i])
+        count += 1
+        if count > 7:
+            break
+        
+
+    res = {"endnum": finnum, "imgs": imgs, "imgnum": endnum}
+    return jsonify(res)
+
 #===================================================================================================================
 #== 呼び出して処理をさせる関数郡
 #===================================================================================================================
@@ -275,9 +311,6 @@ def GetTweets():
 def DoUserSearch():
     # JSからの変数を取得している
     id = request.form.get("id")
-    # サブルーチンで実行することによって処理を止めないって感じで
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-    executor.submit(worker)
     # 指定したTwitterIDのデータを収集する
     def worker():
         ST = atg.ScrayTwitter()
@@ -291,6 +324,10 @@ def DoUserSearch():
         else:
             DoLineMessage(id + "：このアカウントは存在していません")
         ST.Quit()
+    # サブルーチンで実行することによって処理を止めないって感じで
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        executor.submit(worker)
+    
 
     return jsonify({"suc": "suc"})
 
@@ -299,14 +336,17 @@ def DoUserSearch():
 def DoSearchTargetUser_Word():
     # JSからの変数を取得している
     word = request.form.get("word")
-    # サブルーチンで実行することによって処理を止めないって感じで
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-    executor.submit(worker)
     # 指定したTwitterIDのデータを収集する
     def worker():
         ST = atg.ScrayTwitter()
         ST.SearchTargetUser_Word(word)
+        DoLineMessage(word + "：のワードチェックを終了しました")
         ST.Quit()
+    # サブルーチンで実行することによって処理を止めないって感じで
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        executor.submit(worker)
+    
+    
 
     return jsonify({"suc": "suc"})
 # 指定したUserがフォローしているユーザーを評価してユーザー追加する
@@ -314,19 +354,56 @@ def DoSearchTargetUser_Word():
 def DoSearchTargetUser_Follower():
     # JSからの変数を取得している
     id = request.form.get("id")
-    # サブルーチンで実行することによって処理を止めないって感じで
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-    executor.submit(worker)
     # 指定したTwitterIDのデータを収集する
     def worker():
         ST = atg.ScrayTwitter()
         if ST.CheckAccount(id):
             ST.SearchTargetUser_Follower(id)
+            DoLineMessage(id + "：のフォローチェックを終了しました")
         else:
             DoLineMessage(id + "：このアカウントは存在していません")
         ST.Quit()
+    # サブルーチンで実行することによって処理を止めないって感じで
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        executor.submit(worker)
 
     return jsonify({"suc": "suc"})
+
+# 現在のお気に入りユーザーを深くダウンロードする
+@app.route("/deepdownloaduser", methods=["POST"])
+def DoDeepDownloadUser():
+    # JSからの変数を取得している
+    # 指定したTwitterIDのデータを収集する
+    def worker():
+        ST = atg.ScrayTwitter()
+        fav = g.GetFavoriteUser()
+        for id in fav:
+            ddu = g.GetDeepDownloadUser()
+            if not (id in ddu):
+                ST.AllGetTwittersEasy(id)
+                ST.GetTwitterHome(id, True)
+                g.AddDeepDownloadUser(id)
+        ST.Quit()
+        DoLineMessage("お気に入りユーザーをすべてダウンロードしました")
+    # サブルーチンで実行することによって処理を止めないって感じで
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        executor.submit(worker)
+
+    return jsonify({"suc": "suc"})
+
+# 指定したユーザーのお気に入りをトグル
+@app.route("/togglefav", methods=["POST"])
+def DoToggleFav():
+    # JSからの変数を取得している
+    id = request.form.get("id")
+    if g.IsFavoriteUser(id):
+        g.RemoveFavoriteUser(id)
+        return jsonify({"isfav": False})
+    else:
+        g.AddFavoriteUser(id)
+        return jsonify({"isfav": True})
+
+    
 #===================================================================================================================
 #== 使いやすい関数
 #===================================================================================================================

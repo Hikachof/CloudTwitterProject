@@ -57,9 +57,10 @@ elem_btn_sort.addEventListener("click", function() {
     const score_loneli = document.getElementById("score_loneli").value;
     const score_home = document.getElementById("score_home").value;
     const score_mental = document.getElementById("score_mental").value;
+    const favonly = document.getElementById("favonly").checked;
 
     var takeurl = "/userlist_sort";
-    var takedata = {"hobby" : score_hobby, "sex" : score_sex, "job" : score_job, "loneli" : score_loneli, "home" : score_home, "mental" : score_mental};
+    var takedata = {"favonly": favonly, "hobby" : score_hobby, "sex" : score_sex, "job" : score_job, "loneli" : score_loneli, "home" : score_home, "mental" : score_mental};
     
     //console.log(takeurl);
     //window.open(takeurl);
@@ -88,8 +89,6 @@ function drawSuc_userlist(response){
     //
     const favuser = response["favuser"];
 
-    console.log(favuser);
-
     let count = 0;
 
     alldatas.forEach(function (alldata) {
@@ -114,8 +113,6 @@ function drawSuc_userlist(response){
         }
     
         let elem_base = document.createElement("a");
-        elem_base.href = "/userdata?id=" + e_id;
-        elem_base.role = "button";
         elem_base.className = "minidatas";
         if (count%2 == 0)
         {
@@ -123,7 +120,7 @@ function drawSuc_userlist(response){
         }
         else
         {
-            elem_base.style.cssText = "background: #eee;";
+            elem_base.style.cssText = "background: #7d7;";
         }
         count += 1;
         // Icon
@@ -132,19 +129,43 @@ function drawSuc_userlist(response){
         let elem_icon_img = document.createElement("img");
         elem_icon_img.src = "static/datas/Users/" + alldata.id + "/" + alldata.icon_path;
         elem_icon.appendChild(elem_icon_img);
-        elem_icon.appendChild(elem_icon_img);
+        
+        // お気に入り管理
+        let elem_btn_star = document.createElement("button");
+        elem_btn_star.className = "starimg";
+        let elem_star_img = document.createElement("img");
+        elem_btn_star.addEventListener("click", function() {
+            const takeurl = "/togglefav";
+            const takedata = {"id": e_id};
+            getPythonData(takeurl, takedata, function(response) {
+                const isfav = response["isfav"];
+                if (isfav)
+                {
+                    elem_star_img.src = "static/datas/star.png";
+                }
+                else
+                {
+                    elem_star_img.src = "static/datas/star_out.png";
+                }
+            }, drawErr);
+        });
+        
         if (isfavuser)
         {
-            let elem_star_img = document.createElement("img");
-            elem_star_img.src = "static/datas/star-outline.svg";
-            elem_star_img.className = "starimg";
-            elem_icon.appendChild(elem_star_img);
+            elem_star_img.src = "static/datas/star.png";
         }
+        else
+        {
+            elem_star_img.src = "static/datas/star_out.png";
+        }
+        elem_btn_star.appendChild(elem_star_img);
+        elem_icon.appendChild(elem_btn_star);
         elem_base.appendChild(elem_icon);
         // 名前やID
-        let elem_name = document.createElement("div");
+        let elem_name = document.createElement("a");
         elem_name.className = "data name";
         elem_name.innerText = e_name;
+        elem_name.href = "/userdata?id=" + e_id;
         let elem_id = document.createElement("div");
         elem_id.className = "data id";
         elem_id.innerText = e_id;
